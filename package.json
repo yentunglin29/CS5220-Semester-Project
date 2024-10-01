@@ -1,0 +1,23 @@
+{
+    "name": "meal-planner-api",
+    "version": "1.0.0",
+    "description": "A REST API for managing users, meal plans, and meals.",
+    "main": "app.js",
+    "type": "module",
+    "scripts": {
+        "dev": "npx nodemon app.js",
+        "start": "node app.js"
+    },
+    "dependencies": {
+        "axios": "^1.7.7",
+        "dotenv": "^16.4.5",
+        "express": "^4.21.0",
+        "meal-planner-api": "file:"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.7"
+    },
+    "keywords": [],
+    "author": "Yen-Tung, Lin",
+    "license": "ISC"
+}
