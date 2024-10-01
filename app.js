@@ -18,7 +18,7 @@ app.use(express.json());
 
 // Use the routes
 app.use('/users', usersRoutes);
-app.use('/users', mealPlansRoutes);
+app.use('/mealplans', mealPlansRoutes);
 app.use('/meals', mealsRoutes);
 
 // Server setup
