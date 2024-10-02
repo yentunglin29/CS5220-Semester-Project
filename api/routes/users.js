@@ -1,4 +1,3 @@
-// import axios from 'axios';
 import express from 'express';
 
 import { Users, MealPlans } from '../../db/mocks.js';
@@ -79,6 +78,7 @@ router.get('/:id', async(req, res) => {
             username: user.username,
             preferences: user.preferences,
             mealPlans: mealPlans.map(plan => ({
+                id: plan._id,
                 week: plan.week,
                 meals: plan.meals
             }))
