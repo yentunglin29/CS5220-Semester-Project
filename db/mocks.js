@@ -5,7 +5,13 @@ const Users = {
             username: 'prof_auman',
             password: 'future_hashed_password',
             preferences: ['ketogenic']
-        }
+        },
+        {
+            _id: 2,
+            username: 'john_doe',
+            password: 'hashed_password123',
+            preferences: ['vegan', 'gluten free']
+        }        
     ],
 
     find(userId) {
@@ -52,10 +58,35 @@ const MealPlans = {
                     image: 'https://img.spoonacular.com/recipes/1652621-312x231.jpg'
                 }
             ]
-        }
+        },
+        {
+            _id: 2,
+            user_id: 2,
+            week: 1,
+            meals: [
+                {
+                    mealId: 123456,
+                    name: 'Vegan Avocado Toast',
+                    diets: ['vegan', 'gluten free'],
+                    image: 'https://img.spoonacular.com/recipes/123456-312x231.jpg'
+                },
+                {
+                    mealId: 7891011,
+                    name: 'Gluten Free Vegan Salad',
+                    diets: ['vegan', 'gluten free'],
+                    image: 'https://img.spoonacular.com/recipes/7891011-312x231.jpg'
+                }
+            ]
+        }        
     ],
 
+    findAll(userId) {
+        // find all meal plans associated to a user by user_id
+        return this.mealplans.filter((mealplan) => mealplan.user_id === userId);
+    },
+
     find(userId, week) {
+        // find a meal plan by user_id and week
         return this.mealplans.find((mealplan) => mealplan.user_id === userId && mealplan.week === week);
     },
 
