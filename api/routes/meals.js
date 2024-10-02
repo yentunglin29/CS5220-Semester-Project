@@ -5,7 +5,6 @@ import { Users } from '../../db/mocks.js';
 const router = express.Router();
 const SPOONACULAR_API_KEY = process.env.SPOONACULAR_API_KEY;
 
-// GET /meals/search
 router.get('/search', async (req, res) => {
     try {
         const { user_id } = req.headers;
@@ -19,7 +18,6 @@ router.get('/search', async (req, res) => {
         const dietPreferences = diets ? diets.split(',') : user.preferences;
 
         const apiUrl = `https://api.spoonacular.com/recipes/complexSearch?query=${meal}&diet=${dietPreferences.join(',')}&apiKey=${SPOONACULAR_API_KEY}`;
-
         const response = await axios.get(apiUrl);
 
         res.json(response.data.results);
