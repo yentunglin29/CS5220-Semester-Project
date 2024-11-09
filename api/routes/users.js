@@ -1,6 +1,9 @@
 import express from 'express';
 
+import { hash, compare, signToken } from "../utils/auth.js";
 import { Users, MealPlans } from '../../db/mocks.js';
+
+import { verifyUser } from '../middleware/authorization.js';
 
 const router = express.Router();
 
@@ -19,10 +22,12 @@ router.post('/register', async (req, res) => {
             return res.status(409).json({ error: 'Username already registered.' });
         }
 
+        const hashedPassword = await hash(password);
+
         // Add the new user
         const user = Users.add({
             username: username.toLowerCase(),
-            password,
+            password: hashedPassword,
             preferences
         });
 
@@ -44,20 +49,33 @@ router.post('/login', async (req, res) => {
         // Find the user by username within the route itself
         const user = Users.users.find(user => user.username === username.toLowerCase());
 
-        if (!user || user.password !== password) {
-            return res.status(401).json({ error: 'Invalid username or password' });
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid username' });
         }
 
-        res.json({ _id: user._id, username: user.username, preferences: user.preferences });
+        const passwordEqual = await compare(password, user.password);
+        if(!passwordEqual){
+            return res.status(401).json({ error: 'Invalid password' });
+        }
+
+        const token = signToken(user.username, user._id)
+
+        res.json({ 
+            _id: user._id, 
+            username: user.username, 
+            preferences: user.preferences,
+            token_type:'Bearer',
+            access_token: token
+        });
     } catch (error) {
         res.status(500).json({ error: error.toString() });
     }
 });
 
 // GET /users/:id
-router.get('/:id', async (req, res) => {
+router.get('/:id', verifyUser, async (req, res) => {
     try {
-        const user_id = Number(req.headers.user_id);
+        const { user_id } = req.verified;
         const id = Number(req.params.id);
 
         // verify the requesting user (user_id) matches the url param id
@@ -67,10 +85,7 @@ router.get('/:id', async (req, res) => {
 
         // find the user by _id
         const user = Users.find('_id', id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
+        
         // get mealplans associated to the user by _id
         const mealplans = MealPlans.findAll(user._id);
         res.status(200).json({ username: user.username, preferences: user.preferences, mealplans });
