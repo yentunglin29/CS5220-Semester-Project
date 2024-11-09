@@ -55,34 +55,25 @@ router.post('/login', async (req, res) => {
 });
 
 // GET /users/:id
-router.get('/:id', async(req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const { id } = req.params;
-        const { user_id } = req.headers;
+        const user_id = Number(req.headers.user_id);
+        const id = Number(req.params.id);
 
-        if (id !== user_id) {
-            return res.status(403).json({ error: 'Forbidden: User ID mismatch.' });
+        // verify the requesting user (user_id) matches the url param id
+        if (user_id !== id) {
+            return res.status(403).json({ error: 'Forbidden user' });
         }
 
-        const user = Users.find(parseInt(id));
+        // find the user by _id
+        const user = Users.find('_id', id);
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        // Retrieve associated meal plans
-        const mealPlans = MealPlans.mealplans.filter(mealplan => mealplan.user_id === user._id);
-
-        // Respond with the user object, excluding the password, and meal plans
-        res.json({
-            _id: user._id,
-            username: user.username,
-            preferences: user.preferences,
-            mealPlans: mealPlans.map(plan => ({
-                id: plan._id,
-                week: plan.week,
-                meals: plan.meals
-            }))
-        });
+        // get mealplans associated to the user by _id
+        const mealplans = MealPlans.findAll(user._id);
+        res.status(200).json({ username: user.username, preferences: user.preferences, mealplans });
     } catch (error) {
         res.status(500).json({ error: error.toString() });
     }
@@ -91,23 +82,31 @@ router.get('/:id', async(req, res) => {
 // PUT /users/:id
 router.put('/:id', async (req, res) => {
     try {
-        const { id } = req.params;
-        const { user_id } = req.headers;
+        const user_id = Number(req.headers.user_id);
+        const id = Number(req.params.id);
         const { preferences } = req.body;
 
-        if (id !== user_id) {
-            return res.status(403).json({ error: 'Forbidden: User ID mismatch.' });
+        // verify the requesting user (user_id) matches the url param id
+        if (user_id !== id) {
+            return res.status(403).json({ error: 'Forbidden user' });
         }
 
-        const user = Users.find(parseInt(id));
+        // find the user by _id
+        const user = Users.find('_id', id);
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        user.preferences = preferences || user.preferences;
-        Users.update(user);
+        // optional - validate dietary preferences
+        const invalidPreferences = validatePreferences(preferences);
+        if (invalidPreferences.length) {
+            return res
+                .status(400)
+                .json({ error: `Invalid dietary preferences: ${invalidPreferences}` });
+        }
 
-        res.json({ _id: user._id, username: user.username, preferences: user.preferences });
+        const updated = Users.update(user._id, preferences);
+        res.status(200).json({ username: user.username, preferences: updated.preferences });
     } catch (error) {
         res.status(500).json({ error: error.toString() });
     }
