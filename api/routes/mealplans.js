@@ -1,20 +1,20 @@
 import express from 'express';
 
 import { MealPlans } from '../../db/mocks.js';
+
+import { verifyUser } from '../middleware/authorization.js';
+
 const router = express.Router();
 
 const MAX_MEALS = 3;
 
+router.use(verifyUser);
+
 // POST /mealplans
 router.post('/', async (req, res) => {
     try {
-        const user_id = Number(req.headers.user_id);
+        const { user_id } = req.verified;
         const { week, meal } = req.body;
-
-        // verify there is a requesting user (user_id)
-        if (!user_id) {
-            return res.status(403).json({ error: 'Forbidden user' });
-        }
 
         const mealplan = MealPlans.find(user_id, week);
         if (mealplan) {
@@ -37,13 +37,8 @@ router.post('/', async (req, res) => {
 // DELETE /mealplans/:id
 router.delete('/:id', async (req, res) => {
     try {
-        const user_id = Number(req.headers.user_id);
+        const { user_id } = req.verified;
         const id = Number(req.params.id);
-
-        // verify there is a requesting user (user_id)
-        if (!user_id) {
-            return res.status(403).json({ error: 'Forbidden user' });
-        }
 
         const _id = MealPlans.delete(id);
         res.json({ _id, message: 'Delete success' });
