@@ -1,22 +1,22 @@
 import axios from 'axios';
 import express from 'express';
 
+import { verifyUser } from '../middleware/authorization.js';
+
 import { Users } from '../../db/mocks.js';
 const router = express.Router();
 
 const SPOONACULAR_API_URL = process.env.SPOON_API_URL;
 const SPOONACULAR_API_KEY = process.env.SPOON_API_KEY;
 
+router.use(verifyUser);
+
 // GET /meals/search
 router.get('/search', async (req, res) => {
     try {
-        const user_id = Number(req.headers.user_id);
+        // const user_id = Number(req.headers.user_id);
+        const { user_id } = req.verified;
         const { name, preferences } = req.query;
-
-        // verify there is a requesting user (user_id)
-        if (!user_id) {
-            return res.status(403).json({ error: 'Forbidden user' });
-        }
 
         const user = Users.find('_id', user_id);
         if (!user) {
