@@ -3,19 +3,24 @@ const Users = {
         {
             _id: 1,
             username: 'prof_auman',
-            password: 'future_hashed_password',
+            password: 'edc89b9df6765759bf1cf81710d7f018:12b238163110bb74fc80c63cdf7e8ba3591748a78988b0839e45378c311fbe59',
             preferences: ['ketogenic']
         },
         {
             _id: 2,
             username: 'john_doe',
-            password: 'hashed_password123',
+            password: 'edc89b9df6765759bf1cf81710d7f018',
             preferences: ['vegan', 'gluten free']
         }        
     ],
 
-    find(userId) {
-        return this.users.find((user) => user._id === userId);
+    find(key, value) {
+        // find a user by matching a specified key and value
+        return this.users.find((user) => user[key] === value);
+    },
+
+    exists(id){
+        return this.users.some(user => user._id === id);
     },
 
     add(user) {
