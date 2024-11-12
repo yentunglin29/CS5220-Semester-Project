@@ -15,6 +15,7 @@ const app = express();
 const PORT = 8080;
 
 app.use(express.json());
+app.set('json spaces', 2);
 
 // Use the routes
 app.use('/users', usersRoutes);
