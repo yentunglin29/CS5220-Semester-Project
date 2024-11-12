@@ -19,9 +19,6 @@ router.get('/search', async (req, res) => {
         const { name, preferences } = req.query;
 
         const user = Users.find('_id', user_id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
 
         // optional - below
         // split the preferences into an array or set to an empty array

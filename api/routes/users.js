@@ -87,7 +87,8 @@ router.get('/:id', verifyUser, async (req, res) => {
         const user = Users.find('_id', id);
         
         // get mealplans associated to the user by _id
-        const mealplans = MealPlans.findAll(user._id);
+        const mealplans = MealPlans.findAll(user_id);
+
         res.status(200).json({ username: user.username, preferences: user.preferences, mealplans });
     } catch (error) {
         res.status(500).json({ error: error.toString() });
@@ -95,9 +96,9 @@ router.get('/:id', verifyUser, async (req, res) => {
 });
 
 // PUT /users/:id
-router.put('/:id', async (req, res) => {
+router.put('/:id', verifyUser, async (req, res) => {
     try {
-        const user_id = Number(req.headers.user_id);
+        const { user_id } = req.verified;
         const id = Number(req.params.id);
         const { preferences } = req.body;
 
@@ -108,19 +109,16 @@ router.put('/:id', async (req, res) => {
 
         // find the user by _id
         const user = Users.find('_id', id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
 
         // optional - validate dietary preferences
-        const invalidPreferences = validatePreferences(preferences);
-        if (invalidPreferences.length) {
-            return res
-                .status(400)
-                .json({ error: `Invalid dietary preferences: ${invalidPreferences}` });
-        }
+        // const invalidPreferences = validatePreferences(preferences);
+        // if (invalidPreferences.length) {
+        //     return res
+        //         .status(400)
+        //         .json({ error: `Invalid dietary preferences: ${invalidPreferences}` });
+        // }
 
-        const updated = Users.update(user._id, preferences);
+        const updated = Users.update(user_id, preferences);
         res.status(200).json({ username: user.username, preferences: updated.preferences });
     } catch (error) {
         res.status(500).json({ error: error.toString() });
