@@ -38,6 +38,13 @@ const compare = async (password, dbPassword) => {
     });
 };
 
+// Middleware function to hash password within a User schema instance
+export const hashUserPassword = async (user) => {
+    if (user.isModified('password')) {
+        user.password = await hash(user.password);
+    }
+};
+
 const signToken = (username, _id) => {
     const user = { username, user_id: _id };
     return jwt.sign(user, JWT_SECRET, { expiresIn: '24h' });
