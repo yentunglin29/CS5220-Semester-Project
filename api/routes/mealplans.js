@@ -1,6 +1,7 @@
 import express from 'express';
 
-import { MealPlans } from '../../db/mocks.js';
+// import { MealPlans } from '../../db/mocks.js';
+import MealPlans from '../models/mealplan.js';
 
 import { verifyUser } from '../middleware/authorization.js';
 
