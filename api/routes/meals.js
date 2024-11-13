@@ -3,7 +3,9 @@ import express from 'express';
 
 import { verifyUser } from '../middleware/authorization.js';
 
-import { Users } from '../../db/mocks.js';
+// import { Users } from '../../db/mocks.js';
+import Users from '../models/user.js';
+
 const router = express.Router();
 
 const SPOONACULAR_API_URL = process.env.SPOON_API_URL;
