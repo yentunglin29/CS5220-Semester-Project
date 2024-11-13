@@ -17,14 +17,10 @@ const MealPlanSchema = new mongoose.Schema({
     ]
 });
 
-// Post-save hook to log when a meal plan is created
-MealPlanSchema.post('save', function (doc) {
-    console.log(`Meal Plan for user ${doc.user_id} for week ${doc.week} has been created`);
-});
-
-// Post-delete hook to log when a meal plan is deleted
-MealPlanSchema.post('deleteOne', { document: true, query: false }, function (doc) {
-    console.log(`Meal Plan with ID ${doc._id} has been deleted`);
+// Pre-save hook to hash the password before saving
+UserSchema.pre('save', async function (next) {
+    await hashUserPassword(this);
+    next();
 });
 
 const MealPlan = mongoose.model('MealPlan', MealPlanSchema);
