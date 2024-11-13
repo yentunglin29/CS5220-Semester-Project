@@ -1,7 +1,8 @@
 import express from 'express';
-
 import { hash, compare, signToken } from "../utils/auth.js";
-import { Users, MealPlans } from '../../db/mocks.js';
+
+import MealPlan from '../models/mealplan.js';
+import User from '../models/user.js';
 
 import { verifyUser } from '../middleware/authorization.js';
 
@@ -17,7 +18,7 @@ router.post('/register', async (req, res) => {
         }
 
         // Check if username already exists in the users array
-        const isRegistered = Users.users.find(user => user.username === username.toLowerCase());
+        const isRegistered = User.users.find(user => user.username === username.toLowerCase());
         if (isRegistered) {
             return res.status(409).json({ error: 'Username already registered.' });
         }
@@ -25,7 +26,7 @@ router.post('/register', async (req, res) => {
         const hashedPassword = await hash(password);
 
         // Add the new user
-        const user = Users.add({
+        const user = User.add({
             username: username.toLowerCase(),
             password: hashedPassword,
             preferences
@@ -47,7 +48,7 @@ router.post('/login', async (req, res) => {
         }
 
         // Find the user by username within the route itself
-        const user = Users.users.find(user => user.username === username.toLowerCase());
+        const user = User.user.find(user => user.username === username.toLowerCase());
 
         if (!user) {
             return res.status(401).json({ error: 'Invalid username' });
@@ -84,10 +85,10 @@ router.get('/:id', verifyUser, async (req, res) => {
         }
 
         // find the user by _id
-        const user = Users.find('_id', id);
+        const user = User.find('_id', id);
         
         // get mealplans associated to the user by _id
-        const mealplans = MealPlans.findAll(user_id);
+        const mealplans = MealPlan.findAll(user_id);
 
         res.status(200).json({ username: user.username, preferences: user.preferences, mealplans });
     } catch (error) {
@@ -108,7 +109,7 @@ router.put('/:id', verifyUser, async (req, res) => {
         }
 
         // find the user by _id
-        const user = Users.find('_id', id);
+        const user = User.find('_id', id);
 
         // optional - validate dietary preferences
         // const invalidPreferences = validatePreferences(preferences);
@@ -118,7 +119,7 @@ router.put('/:id', verifyUser, async (req, res) => {
         //         .json({ error: `Invalid dietary preferences: ${invalidPreferences}` });
         // }
 
-        const updated = Users.update(user_id, preferences);
+        const updated = User.update(user_id, preferences);
         res.status(200).json({ username: user.username, preferences: updated.preferences });
     } catch (error) {
         res.status(500).json({ error: error.toString() });
