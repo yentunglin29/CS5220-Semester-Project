@@ -7,6 +7,8 @@
 import 'dotenv/config';
 import express from 'express';
 
+import mongodb from './db/connection.js';
+
 import usersRoutes from './api/routes/users.js';
 import mealPlansRoutes from './api/routes/mealplans.js';
 import mealsRoutes from './api/routes/meals.js';
@@ -24,6 +26,9 @@ app.use('/meals', mealsRoutes);
 
 // Server setup
 
-app.listen(PORT, () => {
+app.listen(PORT, async() => {
+    // connecting to mongo db before starting the server
+    await mongodb.connect();
+    
     console.log(`Server running on http://localhost:${PORT}`);
 });
