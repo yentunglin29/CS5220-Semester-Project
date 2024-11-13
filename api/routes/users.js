@@ -1,8 +1,4 @@
 import express from 'express';
-// import { hash, compare, signToken } from "../utils/auth.js";
-
-// import MealPlan from '../models/mealplan.js';
-// import User from '../models/user.js';
 
 import { verifyUser } from '../middleware/authorization.js';
 
