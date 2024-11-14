@@ -14,7 +14,7 @@ import mealPlansRoutes from './api/routes/mealplans.js';
 import mealsRoutes from './api/routes/meals.js';
 
 const app = express();
-const PORT = 8080;
+const PORT = process.env.PORT;
 
 app.use(express.json());
 app.set('json spaces', 2);
