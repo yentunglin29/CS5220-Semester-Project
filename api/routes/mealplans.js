@@ -5,14 +5,12 @@ import { verifyUser } from '../middleware/authorization.js';
 
 const router = express.Router();
 
-const MAX_MEALS = 3;
-
 router.use(verifyUser);
 
 // POST /mealplans
-router.post('/', postMealplan);
+router.post('/', verifyUser, postMealplan);
 
 // DELETE /mealplans/:id
-router.delete('/:id', deleteMealplanById);
+router.delete('/:id', verifyUser, deleteMealplanById);
 
 export default router;

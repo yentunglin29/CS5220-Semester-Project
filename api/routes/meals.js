@@ -2,16 +2,13 @@ import express from 'express';
 
 import { verifyUser } from '../middleware/authorization.js';
 
-import { getMealBySearch } from '../controllers/meal.js';
+import { getMealPlanByMealId } from '../controllers/meal.js';
 
 const router = express.Router();
-
-const SPOONACULAR_API_URL = process.env.SPOON_API_URL;
-const SPOONACULAR_API_KEY = process.env.SPOON_API_KEY;
 
 router.use(verifyUser);
 
 // GET /meals/search
-router.get('/search', getMealBySearch);
+router.get('/search', getMealPlanByMealId);
 
 export default router;
