@@ -1,13 +1,27 @@
+// import mongoose from 'mongoose';
+import axios from 'axios';
+import Users from '../models/user.js';
 
-import User from '../models/user.js';
+const SPOON_API_URL = process.env.SPOON_API_URL;
+const SPOON_API_KEY = process.env.SPOON_API_KEY;
 
-const getMealBySearch = async (req, res) => {
+const getMealPlanByMealId = async (req, res) => {
     try {
-        // const user_id = Number(req.headers.user_id);
-        const { user_id } = req.verified;
+        const { user_id } = req.verified; // Extract user_id from verified token
         const { name, preferences } = req.query;
 
-        const user = User.find('_id', user_id);
+        console.log('Query Parameters:', req.query);
+
+        // Ensure user_id is provided
+        if (!user_id) {
+            return res.status(403).json({ error: 'Forbidden user' });
+        }
+
+        // Find the user by ID
+        const user = await Users.findOne({ _id: user_id });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
 
         // optional - below
         // split the preferences into an array or set to an empty array
@@ -15,17 +29,17 @@ const getMealBySearch = async (req, res) => {
         // concat user preferences with preferences passed into query params
         const diet = [...user.preferences, ...queryPreferences].join(',');
 
-        const response = await axios.get(`${SPOONACULAR_API_URL}/recipes/complexSearch`, {
+        const response = await axios.get(`${SPOON_API_URL}/recipes/complexSearch`, {
             params: {
-                apiKey: SPOONACULAR_API_KEY,
+                apiKey: SPOON_API_KEY,
                 query: name,
                 diet,
                 addRecipeInformation: true // boolean flag to return diets array
             }
         });
-        console.log(`${SPOONACULAR_API_URL}/recipes/complexSearch`);
+        console.log(`${SPOON_API_URL}/recipes/complexSearch`);
         console.log({
-            apiKey: SPOONACULAR_API_KEY,
+            apiKey: SPOON_API_KEY,
             query: name,
             diet,
             addRecipeInformation: true // boolean flag to return diets array
@@ -33,8 +47,8 @@ const getMealBySearch = async (req, res) => {
 
         res.json(response.data.results);
     } catch (error) {
+        console.error('Error fetching recipes:', error.message);
         res.status(500).json({ error: error.toString() });
     }
 };
-
-export { getMealBySearch };
+export { getMealPlanByMealId };

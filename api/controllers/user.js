@@ -1,6 +1,6 @@
 import User from '../models/user.js';
 
-import { hash, compare, signToken } from '../util/auth.js';
+import { hash, compare, signToken } from '../utils/auth.js';
 
 const registerUser = async (req, res) => {
     try {
@@ -10,22 +10,24 @@ const registerUser = async (req, res) => {
             return res.status(422).json({ error: 'Must provide both username and password' });
         }
 
-        // Check if username already exists in the users array
-        const isRegistered = User.users.find(user => user.username === username.toLowerCase());
+        // Check if username already exists in the database
+        const isRegistered = await User.findOne({ username: username.toLowerCase() });
         if (isRegistered) {
             return res.status(409).json({ error: 'Username already registered.' });
         }
 
         const hashedPassword = await hash(password);
 
-        // Add the new user
-        const user = User.add({
+        // Create a new user in the database
+        const newUser = new User({
             username: username.toLowerCase(),
             password: hashedPassword,
             preferences
         });
 
-        res.status(201).json({ _id: user._id, username: user.username, preferences: user.preferences });
+        await newUser.save();
+
+        res.status(201).json({ _id: newUser._id, username: newUser.username, preferences: newUser.preferences });
     } catch (error) {
         res.status(500).json({ error: error.toString() });
     }
@@ -39,25 +41,27 @@ const loginUser = async (req, res) => {
             return res.status(422).json({ error: 'Must provide both username and password' });
         }
 
-        // Find the user by username within the route itself
-        const user = User.user.find(user => user.username === username.toLowerCase());
+        // Find the user by username using Mongoose
+        const user = await User.findOne({ username: username.toLowerCase() });
 
         if (!user) {
             return res.status(401).json({ error: 'Invalid username' });
         }
 
+        // Compare the provided password with the hashed password in the database
         const passwordEqual = await compare(password, user.password);
-        if(!passwordEqual){
+        if (!passwordEqual) {
             return res.status(401).json({ error: 'Invalid password' });
         }
 
-        const token = signToken(user.username, user._id)
+        // Generate a JWT token
+        const token = signToken(user.username, user._id);
 
-        res.json({ 
-            _id: user._id, 
-            username: user.username, 
+        res.json({
+            _id: user._id,
+            username: user.username,
             preferences: user.preferences,
-            token_type:'Bearer',
+            token_type: 'Bearer',
             access_token: token
         });
     } catch (error) {
@@ -67,21 +71,28 @@ const loginUser = async (req, res) => {
 
 const getUserById = async (req, res) => {
     try {
-        const { user_id } = req.verified;
-        const id = Number(req.params.id);
+        const { user_id } = req.verified; // Extract user_id from the verified token
+        const { id } = req.params; // Extract the ID from the URL parameter
 
-        // verify the requesting user (user_id) matches the url param id
-        if (user_id !== id) {
+        // Ensure the requesting user matches the ID in the URL
+        if (String(user_id) !== String(id)) {
             return res.status(403).json({ error: 'Forbidden user' });
         }
 
-        // find the user by _id
-        const user = User.find('_id', id);
-        
-        // get mealplans associated to the user by _id
-        const mealplans = MealPlan.findAll(user_id);
+        // Fetch the user details and populate associated meal plans
+        const user = await User.findById(user_id)
+            .select('-password') // Exclude the password
+            .populate('mealplans'); // Populate meal plans automatically
 
-        res.status(200).json({ username: user.username, preferences: user.preferences, mealplans });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({
+            username: user.username,
+            preferences: user.preferences,
+            mealplans: user.mealplans
+        });
     } catch (error) {
         res.status(500).json({ error: error.toString() });
     }
@@ -89,30 +100,29 @@ const getUserById = async (req, res) => {
 
 const putUserById = async (req, res) => {
     try {
-        const { user_id } = req.verified;
-        const id = Number(req.params.id);
-        const { preferences } = req.body;
+        const { user_id } = req.verified; // user_id from the JWT token
+        const { id } = req.params; // user ID from the URL
+        const { preferences } = req.body; // new preferences to update
 
-        // verify the requesting user (user_id) matches the url param id
+        // Verify that the requesting user matches the user ID in the URL
         if (user_id !== id) {
             return res.status(403).json({ error: 'Forbidden user' });
         }
 
-        // find the user by _id
-        const user = User.find('_id', id);
+        // Update the user's preferences using Mongoose
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            { preferences },
+            { new: true } // Return the updated document
+        );
 
-        // optional - validate dietary preferences
-        // const invalidPreferences = validatePreferences(preferences);
-        // if (invalidPreferences.length) {
-        //     return res
-        //         .status(400)
-        //         .json({ error: `Invalid dietary preferences: ${invalidPreferences}` });
-        // }
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
 
-        const updated = User.update(user_id, preferences);
-        res.status(200).json({ username: user.username, preferences: updated.preferences });
+        res.status(200).json({ username: updatedUser.username, preferences: updatedUser.preferences });
     } catch (error) {
-        res.status(500).json({ error: error.toString() });
+        res.status(500).json({ error: error.message });
     }
 };
 
