@@ -17,10 +17,9 @@ const MealPlanSchema = new mongoose.Schema({
     ]
 });
 
-// Pre-save hook to hash the password before saving
-UserSchema.pre('save', async function (next) {
-    await hashUserPassword(this);
-    next();
+// Post-save hook to log when a meal plan is created
+MealPlanSchema.post('save', function (doc) {
+    console.log(`Meal Plan for user ${doc.user_id} for week ${doc.week} has been created`);
 });
 
 const MealPlan = mongoose.model('MealPlan', MealPlanSchema);
