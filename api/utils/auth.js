@@ -22,17 +22,24 @@ const hash = async (password) => {
     });
 };
 
-const compare = async (password, dbPassword) => {
+const compare = async (password, storedPassword) => {
     return new Promise((resolve, reject) => {
-        const [salt, hash] = dbPassword.split(':');
+        // Split the stored password into salt and hash
+        const [salt, storedHash] = storedPassword.split(':');
+        if (!salt || !storedHash) {
+            return resolve(false); // Return false if the format is incorrect
+        }
 
-        const hashBuffer = Buffer.from(hash, 'hex');
+        const hashBuffer = Buffer.from(storedHash, 'hex');
+
+        // Hash the input password using the same salt
         scrypt(password, salt, KEYLEN, (err, derivedKey) => {
-            if (err) {
-                reject(err);
-            }
+            if (err) return reject(err);
 
-            const isEqual = timingSafeEqual(hashBuffer, derivedKey);
+            const derivedBuffer = Buffer.from(derivedKey, 'hex');
+
+            // Use timingSafeEqual to compare the stored hash with the derived hash
+            const isEqual = timingSafeEqual(hashBuffer, derivedBuffer);
             resolve(isEqual);
         });
     });
