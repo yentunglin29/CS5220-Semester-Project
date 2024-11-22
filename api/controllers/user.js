@@ -25,6 +25,9 @@ const registerUser = async (req, res) => {
             preferences
         });
 
+        // Save the new user to the database
+        await newUser.save();
+        
         res.status(201).json({ _id: newUser._id, username: newUser.username, preferences: newUser.preferences });
     } catch (error) {
         res.status(500).json({ error: error.toString() });
