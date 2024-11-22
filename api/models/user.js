@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { hashUserPassword } from '../utils/auth.js';
 
 const UserSchema = new mongoose.Schema(
     {
@@ -30,12 +29,6 @@ UserSchema.virtual('mealplans', {
     ref: 'MealPlan',
     localField: '_id',
     foreignField: 'user_id'
-});
-
-// Pre-save hook to hash the password before saving
-UserSchema.pre('save', async function (next) {
-    await hashUserPassword(this);
-    next();
 });
 
 const User = mongoose.model('User', UserSchema);
