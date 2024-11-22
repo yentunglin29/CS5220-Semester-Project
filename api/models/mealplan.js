@@ -17,9 +17,13 @@ const MealPlanSchema = new mongoose.Schema({
     ]
 });
 
-// Post-save hook to log when a meal plan is created
-MealPlanSchema.post('save', function (doc) {
-    console.log(`Meal Plan for user ${doc.user_id} for week ${doc.week} has been created`);
+// Pre-save hook to ensure no more than 3 meals in a meal plan
+MealPlanSchema.pre('save', function (next) {
+    if (this.meals.length > 3) {
+        const error = new Error('Meal plans cannot contain more than 3 meals.');
+        return next(error);
+    }
+    next();
 });
 
 const MealPlan = mongoose.model('MealPlan', MealPlanSchema);
