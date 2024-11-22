@@ -10,7 +10,7 @@ const getMealPlanByMealId = async (req, res) => {
         const { user_id } = req.verified; // Extract user_id from verified token
         const { name, preferences } = req.query;
 
-        console.log('Query Parameters:', req.query);
+        // console.log('Query Parameters:', req.query);
 
         // Ensure user_id is provided
         if (!user_id) {
@@ -45,7 +45,13 @@ const getMealPlanByMealId = async (req, res) => {
             addRecipeInformation: true // boolean flag to return diets array
         });
 
-        res.json(response.data.results);
+        // Check if results exist and are not empty
+        if (response.data.results && response.data.results.length > 0) {
+            res.json(response.data.results);
+        } else {
+            // console.log('No recipes found for the given criteria');
+            res.status(404).json({ message: 'No recipes found for the given criteria' });
+        }
     } catch (error) {
         console.error('Error fetching recipes:', error.message);
         res.status(500).json({ error: error.toString() });
