@@ -9,9 +9,9 @@ import express from 'express';
 
 import mongodb from './db/connection.js';
 
-import usersRoutes from './api/routes/users.js';
-import mealPlansRoutes from './api/routes/mealplans.js';
-import mealsRoutes from './api/routes/meals.js';
+import usersRoutes from './routes/users.js';
+import mealPlansRoutes from './routes/mealplans.js';
+import mealsRoutes from './routes/meals.js';
 
 const app = express();
 const PORT = process.env.PORT;

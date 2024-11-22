@@ -1,0 +1,368 @@
+{
+	"info": {
+		"_postman_id": "3f303ec7-3473-4972-8cd9-fdc2739202ed",
+		"name": "CS 5220 Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30403739"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "/register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"testuser\",\r\n  \"password\": \"testpassword\",\r\n  \"preferences\": [\"Paleo\"]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/login",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"prof_auman\",\r\n  \"password\": \"future_hashed_password\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/:id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InByb2ZfYXVtYW4iLCJ1c2VyX2lkIjoiNjczM2U2Yjg4MjM1NThlMzg2ZjZhZWIzIiwiaWF0IjoxNzMyMjk5NDk4LCJleHAiOjE3MzIzODU4OTh9.lZeZEK9GC9c3Bk-2WbLab0wGGcE48biuUVGvfh9Mdrc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InByb2ZfYXVtYW4iLCJ1c2VyX2lkIjoiNjczM2U2Yjg4MjM1NThlMzg2ZjZhZWIzIiwiaWF0IjoxNzMyMjMzMTg4LCJleHAiOjE3MzIzMTk1ODh9.fEnt_wj00UuMsHL3lo2b4D3eHCUoc67pvEi1QHMHfgc",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "sails.sid=s%3ATGGC0KxtjRV26demQDjZ_Q-0sjpecU66.aEuU1lpZNb4t16jOB2l8VCTr08DGLMIcyhRXbqUai7U",
+								"type": "text"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/users/6733e6b8823558e386f6aeb3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"6733e6b8823558e386f6aeb3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/:id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InByb2ZfYXVtYW4iLCJ1c2VyX2lkIjoiNjczM2U2Yjg4MjM1NThlMzg2ZjZhZWIzIiwiaWF0IjoxNzMyMjk5NDk4LCJleHAiOjE3MzIzODU4OTh9.lZeZEK9GC9c3Bk-2WbLab0wGGcE48biuUVGvfh9Mdrc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"preferences\": [\"ketogenic\"]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/users/6733e6b8823558e386f6aeb3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"users",
+								"6733e6b8823558e386f6aeb3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Mealplans",
+			"item": [
+				{
+					"name": "/mealplans",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InByb2ZfYXVtYW4iLCJ1c2VyX2lkIjoiNjczM2U2Yjg4MjM1NThlMzg2ZjZhZWIzIiwiaWF0IjoxNzMyMjk5NDk4LCJleHAiOjE3MzIzODU4OTh9.lZeZEK9GC9c3Bk-2WbLab0wGGcE48biuUVGvfh9Mdrc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "_id",
+								"value": "6733e6b8823558e386f6aeb3",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "user_id",
+								"value": "6733e6b8823558e386f6aeb3",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"week\": 2,\r\n  \"meal\": {\r\n    \"mealId\": 12345,\r\n    \"name\": \"Keto Burger\",\r\n    \"diets\": [\"ketogenic\", \"gluten free\"],\r\n    \"image\": \"https://example.com/keto-burger.jpg\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/mealplans",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"mealplans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/:id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InByb2ZfYXVtYW4iLCJ1c2VyX2lkIjoiNjczM2U2Yjg4MjM1NThlMzg2ZjZhZWIzIiwiaWF0IjoxNzMyMjk5NDk4LCJleHAiOjE3MzIzODU4OTh9.lZeZEK9GC9c3Bk-2WbLab0wGGcE48biuUVGvfh9Mdrc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "user_id",
+								"value": "6733e6b8823558e386f6aeb3",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"meal_id\": \"6740cd828b31f5018958a612\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/mealplans/6733e6b8823558e386f6aeb3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"mealplans",
+								"6733e6b8823558e386f6aeb3"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "6733e6b8823558e386f6aeb3",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Meals",
+			"item": [
+				{
+					"name": "/search",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InByb2ZfYXVtYW4iLCJ1c2VyX2lkIjoiNjczM2U2Yjg4MjM1NThlMzg2ZjZhZWIzIiwiaWF0IjoxNzMyMjk5NDk4LCJleHAiOjE3MzIzODU4OTh9.lZeZEK9GC9c3Bk-2WbLab0wGGcE48biuUVGvfh9Mdrc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "user_id",
+								"value": "6733e6b8823558e386f6aeb3",
+								"type": "text"
+							},
+							{
+								"key": "user_id",
+								"value": "1",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/meals/search?name=pancakes&preferences=ketogenic,gluten free ",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"meals",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "pancakes"
+								},
+								{
+									"key": "preferences",
+									"value": "ketogenic,gluten free "
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

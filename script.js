@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
 
-import User from './api/models/user.js';
-import MealPlan from './api/models/mealplan.js';
+import User from './models/user.js';
+import MealPlan from './models/mealplan.js';
 
 const DB_USER = process.env.DB_USER;
 const DB_PASSWORD = process.env.DB_PASSWORD;
