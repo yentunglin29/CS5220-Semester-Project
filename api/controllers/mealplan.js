@@ -8,13 +8,10 @@ const postMealplan = async (req, res) => {
 
         let mealplan = await MealPlan.findOne({ user_id, week });
         if (mealplan) {
-            if (mealplan.meals.length >= 3) {
-                return res.status(400).json({ message: 'Meal plan contains the maximum of 3 meals' });
-            }
             mealplan.meals.push(meal);
             await mealplan.save();
             return res.json(mealplan);
-        }
+        }            
 
         const newMealPlan = await MealPlan.create({ user_id, week, meals: [meal] });
         res.json(newMealPlan);
