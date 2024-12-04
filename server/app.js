@@ -7,7 +7,7 @@
 import 'dotenv/config';
 import express from 'express';
 
-import mongodb from './db/connection.js';
+import mongodb from './api/db/connection.js';
 
 import usersRoutes from './routes/users.js';
 import mealPlansRoutes from './routes/mealplans.js';
