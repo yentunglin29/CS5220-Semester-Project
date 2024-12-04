@@ -1,47 +1,79 @@
 <script>
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+  import { Router, Link, Route } from 'svelte-routing';
+  import LoginRegister from './pages/LoginRegister.svelte';
 </script>
 
-<main>
-  <div>
-    <a href="https://vite.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
-  <h1>Vite + Svelte</h1>
+<div class="app-container">
+    <Router>
+        <nav class="navbar">
+            <div class="navbar-app-name"><h1>CS5220 Meal Plan App</h1></div>
 
-  <div class="card">
-    <Counter />
-  </div>
+            <div class="navbar-actions">
+                <Link to="/account">Login</Link>
+            </div>
+        </nav>
 
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
-</main>
+        <div>
+            <Route path="/account">
+                <LoginRegister />
+            </Route>
+        </div>
+    </Router>
+</div>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
+  .app-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+
+  .navbar {
+      background-color: #0c111a;
+      padding: 1rem;
+      border-bottom: 1px solid #00001a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
   }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
+
+  .navbar-app-name {
+      display: flex;
+      align-items: center;
   }
-  .read-the-docs {
-    color: #888;
+
+  .navbar h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 300;
+      margin: 0;
+      color: #d6dbe4;
+  }
+
+  .navbar-actions {
+      display: flex;
+      align-items: center;
+  }
+
+  .navbar-item {
+      margin-right: 1rem;
+      color: #d6dbe4;
+      text-transform: uppercase;
+      font-size: 1rem;
+      text-decoration: none;
+  }
+
+  .logout-btn {
+      margin-left: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      background: #f2c069;
+      color: #0c111a;
+      border: none;
+      cursor: pointer;
+  }
+
+  .logout-btn:hover {
+      background-color: #a0a8b5;
   }
 </style>
