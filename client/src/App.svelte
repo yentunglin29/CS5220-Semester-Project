@@ -1,6 +1,31 @@
 <script>
-  import { Router, Link, Route } from 'svelte-routing';
-  import LoginRegister from './pages/LoginRegister.svelte';
+    import { Router, Link, Route, navigate } from 'svelte-routing';
+    
+    import LoginRegister from './pages/LoginRegister.svelte';
+    import Profile from './pages/Profile.svelte';
+
+    const verifyLogin = () => {
+        // retrieve user from local storage or return null if not found
+        const user = JSON.parse(localStorage.getItem('user'));
+        return user || null;
+    };
+    const logout = () => {
+        // remove user from local storage and reset user variable
+        localStorage.removeItem('user');
+        user = null;
+
+        // navigate to account page after logout
+        navigate('/account');
+    };
+
+    // initialize guest state based on current login status
+    let user = $state(verifyLogin());
+
+    // update guest state if storage-updated occurs
+    window.addEventListener('storage-updated', () => {
+        user = verifyLogin();
+    });
+
 </script>
 
 <div class="app-container">
@@ -9,13 +34,25 @@
             <div class="navbar-app-name"><h1>CS5220 Meal Plan App</h1></div>
 
             <div class="navbar-actions">
-                <Link to="/account">Login</Link>
+                {#if user}
+                    <Link to="/profile/{user._id}">
+                        <span class="navbar-item">Profile</span>
+                    </Link>
+                    <button class="navbar-item logout-btn" onclick={logout}>Logout</button>
+                {:else}
+                    <Link to="/account">
+                        <span class="navbar-item">Login</span>
+                    </Link>
+                {/if}
             </div>
         </nav>
 
         <div>
             <Route path="/account">
                 <LoginRegister />
+            </Route>
+            <Route path="/profile/:id" let:params>
+                <Profile id={params.id} />
             </Route>
         </div>
     </Router>
