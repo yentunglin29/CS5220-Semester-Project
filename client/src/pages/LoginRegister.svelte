@@ -1,30 +1,100 @@
 <script>
+    import { navigate } from 'svelte-routing';
     import axios from 'axios';
 
-    // TODO make this component handle login and/or register for a guest
     let username = $state('');
     let password = $state('');
 
+    let formType = $state('login');
+
+    // configuration for login and registration forms
+    const formConfig = {
+        login: {
+            title: 'Login',
+            button_text: 'Login',
+            toggle_text: 'No account? Register'
+        },
+        register: {
+            title: 'Register',
+            button_text: 'Register',
+            toggle_text: 'Already have an account? Login'
+        }
+    };
+
+    // toggle between login and register form types
+    const formTypeToggle = () => {
+        formType = formType === 'login' ? 'register' : 'login';
+    };
+
     const handleSubmit = async () => {
-        const endpoint = `http://localhost:8080/users/login`;
+        // set endpoint based on form type (login or register)
+        const endpoint = `http://localhost:8080/users/${formType}`;
         try {
+            // send form data to the server
             const response = await axios.post(endpoint, { username, password });
             console.log(response.data);
-            // on successful login (aka we get a token)
-            // redirect to the profile page
+
+            // handle login success, save user data to local storage
+            if (formType === 'login' && response.data._id) {
+                const { _id, token_type, access_token } = response.data;
+
+                // create user object with _id and token type and access token
+                const user = { _id, header_token: `${token_type} ${access_token}` };
+
+                // store user data in local storage
+                localStorage.setItem('user', JSON.stringify(user));
+
+                // dispatch event to notify other parts of the app about storage-updated
+                window.dispatchEvent(new Event('storage-updated'));
+
+                // navigate to the user's profile page after successful login
+                navigate(`/profile/${_id}`);
+            }
+
+            // handle register success and toggle to the login form
+            if (formType === 'register' && response.data._id) {
+                formTypeToggle();
+            }
         } catch (error) {
-            console.log(error);
+            // Handle and display error messages
+            let errorMessage;
+
+            if (error.response && error.response.status === 401) {
+                errorMessage = 'Invalid username or password.';
+            } else if (error.response && error.response.status === 400) {
+                errorMessage = 'Please fill in all required fields.';
+            } else {
+                errorMessage = 'Something went wrong. Please try again later.';
+            }
+
+            alert(errorMessage); // Display error to the user
         }
     };
 </script>
 
 <div class="form-container">
-    <h1>Login</h1>
+    <h1>{formConfig[formType].title}</h1>
 
     <input type="text" bind:value={username} placeholder="username" />
     <input type="password" bind:value={password} placeholder="password" />
 
-    <button class="submit-btn" onclick={handleSubmit}>Submit</button>
+    <button class="submit-btn" onclick={handleSubmit}>
+        {formConfig[formType].button_text}
+    </button>
+
+    <div class="toggle-container">
+        <label for="toggle" class="toggle-label">
+            {formConfig[formType].toggle_text}
+        </label>
+        <button
+            class="toggle-btn"
+            role="switch"
+            aria-label="Toggle between login and register"
+            aria-checked={formType === 'login' ? false : true}
+            class:active={formType === 'login'}
+            onclick={formTypeToggle}
+        ></button>
+    </div>
 </div>
 
 <style>
@@ -80,7 +150,8 @@
     }
 
     .toggle-label {
-        font-size: 1rem;
+        margin-top: 0.5rem;
+        color: #007bff;
     }
 
     .toggle-btn {
