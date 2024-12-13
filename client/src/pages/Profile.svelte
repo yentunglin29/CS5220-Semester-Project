@@ -34,7 +34,11 @@
         <div>Loading User Profile...</div>
     {:else}
         <h1>Welcome, {profile.username}!</h1>
-        <p>Preferences: {profile.preferences || 'No preferences specified.'}</p>
+        <p>
+            Preferences: {profile.preferences && profile.preferences.length > 0
+              ? profile.preferences.join(', ')
+              : 'No preferences specified.'}
+        </p>
         <h2>Meal Plan</h2>
         <div class="mealplan-list">
             {#if profile.mealplans.length === 0}
@@ -43,15 +47,11 @@
                 {#each profile.mealplans as mealplan}
                     <div class="mealplan-section">
                         <h2>Meal Plan - Week {mealplan.week}</h2>
-                        <div class="mealplan-list">
-                            {#each mealplan.meals as meal}
-                                <MealCard name={meal.name} diets={meal.diets} image={meal.image} />
-                            {/each}
-                        </div>
+                        <MealCard meals={mealplan.meals} />
                     </div>
                 {/each}
             {/if}
-        </div>
+        </div>        
     {/if}
 </div>
 

@@ -1,19 +1,26 @@
 <script>
-    // 'export' is used to make these variables accessible as props
-    export let image = '';
-    export let name = '';
-    export let diets = [];
+    export let meals = [];
 </script>
 
-<div class="meal-card">
-    <img class="meal-image" src={image} alt={name} />
-    <div class="meal-info">
-        <p class="meal-name">{name}</p>
-        <p class="meal-diets">{diets.join(', ')}</p>
-    </div>
+<div class="meal-cards-container">
+    {#each meals as meal}
+        <div class="meal-card">
+            <img class="meal-image" src={meal.image} alt={meal.name} />
+            <div class="meal-info">
+                <p class="meal-name">{meal.name}</p>
+                <p class="meal-diets">{meal.diets.join(', ')}</p>
+            </div>
+        </div>
+    {/each}
 </div>
 
 <style>
+    .meal-cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
     .meal-card {
         background-color: #1d2531;
         padding: 1.5rem;
