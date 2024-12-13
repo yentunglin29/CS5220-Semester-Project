@@ -4,6 +4,7 @@
 
     let username = $state('');
     let password = $state('');
+    let preferences = $state(''); // New variable for dietary preferences input
 
     let formType = $state('login');
 
@@ -24,14 +25,21 @@
     // toggle between login and register form types
     const formTypeToggle = () => {
         formType = formType === 'login' ? 'register' : 'login';
+        preferences = ''; // Clear preferences input when toggling
     };
 
     const handleSubmit = async () => {
         // set endpoint based on form type (login or register)
         const endpoint = `http://localhost:8080/users/${formType}`;
         try {
+            const data = {
+                username,
+                password,
+                preferences: preferences ? preferences.split(',').map(pref => pref.trim()) : [] // Convert input to array
+            };
+
             // send form data to the server
-            const response = await axios.post(endpoint, { username, password });
+            const response = await axios.post(endpoint, data);
             console.log(response.data);
 
             // handle login success, save user data to local storage
@@ -77,6 +85,11 @@
 
     <input type="text" bind:value={username} placeholder="username" />
     <input type="password" bind:value={password} placeholder="password" />
+
+    {#if formType === 'register'}
+        <label for="preferences">Dietary Preferences (comma-separated, e.g., Vegan, Keto)</label>
+        <input id="preferences" type="text" bind:value={preferences} />
+    {/if}
 
     <button class="submit-btn" onclick={handleSubmit}>
         {formConfig[formType].button_text}
